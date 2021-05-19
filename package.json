@@ -30,8 +30,7 @@
 		"mongoose": "^5.12.9",
 		"passport": "^0.4.1",
 		"passport-jwt": "^4.0.0",
-		"validator": "^13.6.0",
-		"Node": "^15.2.1"
+		"validator": "^13.6.0"
 	},
 	"engine": {
 		"node": "15.2.1",
