@@ -8,11 +8,14 @@ const TaskSchema = new Schema({
   },
   achievedTimes: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0
   },
   color: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0,
+    max: 4
   },
   //* add user id in the future
   // user:{

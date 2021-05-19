@@ -7,8 +7,8 @@ const passport = require('passport');
 const path = require('path');
 
 //* import routes here
-const tasks = require('./routes/api/task')
-
+const tasks = require('./routes/api/task');
+const dates = require('./routes/api/date');
 
 //* connect to MongoDB
 mongoose
@@ -26,7 +26,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`))
 
 //* setup api routes
 app.use('/api/tasks', tasks);
-
+app.use('/api/dates', dates)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('frontend/build'));

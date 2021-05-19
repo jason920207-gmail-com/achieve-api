@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Task = require('../../models/Task');
+const DateObj = require('../../models/Date');
 const TaskValidator = require('../../validation/task_validation');
 
 router.get('/', (req, res) => {
@@ -36,7 +37,7 @@ router.patch('/:id', (req, res) => {
       name: req.body.name,
       achievedTimes: req.body.achievedTimes,
       color: req.body.color
-    }, 
+    },
     { new: true }
   )
     .then(task => res.json(task))
@@ -59,4 +60,60 @@ router.delete(
       })
   }
 );
+
+//* add achieved time to task
+router.patch(
+  '/add/:id',
+  (req, res) => {
+    const today = new Date();
+    const date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    DateObj.find({ date: date })
+      .then(dates => {
+        // console.log(dates);
+        if (dates.length === 0) {
+          const newDateObj = new DateObj({
+            date: date,
+            tasks: {
+              [`${req.params.id}`]: 1
+            }
+          })
+          newDateObj.save()
+            .then(
+              dateObj => console.log(dateObj)
+            )
+            .catch(err => console.log(err));
+        } else {
+          // console.log(dates[0])
+          const currDateObj = dates[0];
+          // currDateObj.tasks[req.params.id] = currDateObj.tasks[req.params.id] + 1;
+          const taskNumDoneToday = currDateObj.tasks.get(`${req.params.id}`)
+          console.log("taskNumDoneToday", taskNumDoneToday)
+          currDateObj.tasks.set(`${req.params.id}`, taskNumDoneToday + 1)
+          console.log("task", currDateObj.tasks)
+          currDateObj.save()
+            .then(dateObj => console.log(dateObj))
+            .catch(err => console.log(err));
+        }
+      })
+
+
+    Task.findById(req.params.id)
+      .then((task) => {
+        task.achievedTimes++;
+        task.save()
+          .then(
+            task => {
+              res.status(200).json(task)
+            }
+          )
+          .catch(
+            err => res.status(400).json({ errors: err })
+          )
+      })
+      .catch(errors => {
+        res.status(400).json({ errors: errors })
+      })
+  }
+);
+
 module.exports = router;
