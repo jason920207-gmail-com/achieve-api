@@ -42,19 +42,28 @@ router.post('/', (req, res) => {
 });
 
 router.patch('/:id', (req, res) => {
-  Task.findOneAndUpdate(
-    { _id: req.params.id },
-    {
-      name: req.body.name,
-      achievedTimes: req.body.achievedTimes,
-      color: req.body.color
-    },
-    { new: true }
-  )
-    .then(task => res.json(task))
-    .catch((errors) => {
-      res.status(400).json({ errors: errors });
+  Task.findById(req.params.id)
+    .then(task => {
+      task.name = req.body.name;
+      task.color = req.body.color;
+      task.save()
+        .then(task => res.json(task))
+        .catch(err => res.status(400).json({ errors: err }))
     })
+
+  // Task.findOneAndUpdate(
+  //   { _id: req.params.id },
+  //   {
+  //     name: req.body.name,
+  //     // achievedTimes: req.body.achievedTimes,
+  //     color: req.body.color
+  //   },
+  //   { new: true }
+  // )
+  //   .then(task => res.json(task))
+  //   .catch((errors) => {
+  //     res.status(400).json({ errors: errors });
+  //   })
 })
 
 router.delete(
