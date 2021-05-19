@@ -15,6 +15,17 @@ router.get('/', (req, res) => {
     })
 })
 
+router.get(
+  '/:id',
+  (req, res) => {
+    console.log("get one", req.params.id)
+    Task.findById(req.params.id)
+      .then(task => res.json(task))
+      .catch(err => res.status(400).json({ errors: err }));
+  }
+)
+
+
 router.post('/', (req, res) => {
   const { isValid, errors } = TaskValidator(req.body);
   if (!isValid) {
